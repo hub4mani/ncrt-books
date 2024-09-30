@@ -34,6 +34,11 @@ jobs:
           ng build ncrt-books
           ng build --configuration production --output-path docs --base-href /ncrt-books/
 
+      - name: Move files to docs folder
+        run: |
+          mv docs/browser/* docs/ 
+          rm -rf docs/browser
+
       - uses: EndBug/add-and-commit@v7
         with:
           add: "docs"

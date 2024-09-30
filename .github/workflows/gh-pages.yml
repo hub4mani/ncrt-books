@@ -31,7 +31,7 @@ jobs:
       # Builds the Angular app
       - name: Build Angular
         run: |
-          ng build lib
+          ng build ncrt-books
           ng build --configuration production --output-path docs --base-href /ncrt-books/
 
       - uses: EndBug/add-and-commit@v7

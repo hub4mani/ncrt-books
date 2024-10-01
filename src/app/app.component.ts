@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'; 
@@ -23,12 +23,13 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     PdfViewerModule,
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit  {
+@Injectable({ providedIn: 'root' })
+export class AppComponent implements OnInit {
   title = 'ncrt-books';
   grades = ['V', 'VI', 'VII']; // Populate with actual grades
-  subjects: string[] = [];
+  subjects: string[] = ['Maths', 'ICT'];
   lessons: string[] = [];
   selectedGrade: string = '';
   selectedSubject: string = '';
@@ -40,11 +41,21 @@ export class AppComponent implements OnInit  {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    // Fetch subjects and lessons based on selected grade (Implementation needed)
+    // Fetch subjects and lessons based on selected grade
+    this.fetchSubjectsAndLessons();
+  }
+
+  fetchSubjectsAndLessons() {
+    // Implement the logic to fetch subjects and lessons based on the selected grade
+    // Example:
+    // this.http.get(`/api/grades/${this.selectedGrade}/subjects`).subscribe((data: any) => {
+    //   this.subjects = data.subjects;
+    //   this.lessons = data.lessons;
+    // });
   }
 
   loadLesson() {
-    // Fetch PDF URL based on selected lesson (Implementation needed)
+    // Fetch PDF URL based on selected lesson
     this.pdfSrc = '...'; // Set PDF source URL
 
     this.http.post('/start_chat', { lesson: this.selectedLesson }).subscribe((response) => {
@@ -54,9 +65,10 @@ export class AppComponent implements OnInit  {
 
   askQuestion() {
     this.chatMessages.push({ text: this.userQuestion, isUser: true });
+    const question = this.userQuestion;
     this.userQuestion = '';
 
-    this.http.post('/chat', { question: this.userQuestion }).subscribe((response: any) => {
+    this.http.post('/chat', { question }).subscribe((response: any) => {
       this.chatMessages.push({ text: response.answer, isUser: false });
     });
   }

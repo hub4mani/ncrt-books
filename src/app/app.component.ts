@@ -8,6 +8,27 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { DomSanitizer } from '@angular/platform-browser';
+
+interface Grade {
+  id: number;
+  name: string;
+}
+
+interface Subject {
+  id: number;
+  name: string;
+  grade_id: number;
+}
+
+interface Lesson {
+  id: number;
+  name: string;
+  subject_id: number;
+  github_url: string;
+  lesson_number: string;
+  lesson_title: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -28,39 +49,78 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 @Injectable({ providedIn: 'root' })
 export class AppComponent implements OnInit {
   title = 'ncrt-books';
-  grades = ['V', 'VI', 'VII']; // Populate with actual grades
-  subjects: string[] = ['Maths', 'ICT'];
-  lessons: string[] = [];
-  selectedGrade: string = '';
-  selectedSubject: string = '';
-  selectedLesson: string = '';
+  grades: Grade[] = [];
+  subjects: Subject[] = [];
+  lessons: Lesson[] = [];
+
+  selectedGrade: Grade | null = null; // Initialize as null
+  selectedSubject: Subject | null = null; // Initialize as null
+  selectedLesson: Lesson | null = null;
+  
   pdfSrc: any = null;
   chatMessages: { text: string, isUser: boolean }[] = [];
   userQuestion: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private domSanitizer: DomSanitizer) {}
 
   ngOnInit() {
-    // Fetch subjects and lessons based on selected grade
-    this.fetchSubjectsAndLessons();
+    this.fetchGrades();
   }
 
-  fetchSubjectsAndLessons() {
-    // Implement the logic to fetch subjects and lessons based on the selected grade
-    // Example:
-    // this.http.get(`/api/grades/${this.selectedGrade}/subjects`).subscribe((data: any) => {
-    //   this.subjects = data.subjects;
-    //   this.lessons = data.lessons;
-    // });
+  fetchGrades() {
+    this.http.get<Grade[]>(`https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/grades`)
+      .subscribe(data => {
+        this.grades = data; 
+      });
+  }
+
+  fetchSubjects(gradeId: number | undefined) {
+    if (gradeId !== undefined) { 
+      this.http.get<Subject[]>(`https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/subjects?grade_id=${gradeId.toString()}`) 
+        .subscribe(data => {
+          this.subjects = data; 
+        });
+    } else {
+      this.subjects = []; // Clear subjects if no grade is selected
+    }
+  }
+
+  fetchLessons(subjectId: number | undefined) {
+    if (subjectId !== undefined) {
+      this.http.get<Lesson[]>(`https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/lessons?subject_id=${subjectId.toString()}`) 
+        .subscribe(data => {
+          this.lessons = data;
+        });
+    } else {
+      this.lessons = []; // Clear lessons if no subject is selected
+    }
   }
 
   loadLesson() {
-    // Fetch PDF URL based on selected lesson
-    this.pdfSrc = '...'; // Set PDF source URL
+    if (this.selectedLesson) {
+      const pdfUrl = this.selectedLesson.github_url; // .replace('/blob/', '/raw/'); 
+      this.pdfSrc = pdfUrl;
+      console.log("pdfUrl = " + pdfUrl)
 
-    this.http.post('/start_chat', { lesson: this.selectedLesson }).subscribe((response) => {
-      // Handle start_chat response if needed
-    });
+      // this.http.post('https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/start_chat', { lesson: this.selectedLesson }).subscribe({
+      //   next: (response) => {
+      //     // Handle start_chat response
+      //   },
+      //   error: (error) => {
+      //     console.error('Error starting chat:', error); 
+      //     // Display error message to the user
+      //   }
+      // });
+    }
+  }
+
+  getPdfUrl() {
+    if (this.pdfSrc) {
+      const url = `https://docs.google.com/viewer?url=${this.pdfSrc}&embedded=true`;
+      return this.domSanitizer.bypassSecurityTrustResourceUrl(url); 
+    } else {
+      return ''; 
+    }
   }
 
   askQuestion() {

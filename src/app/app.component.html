@@ -3,45 +3,54 @@
     <mat-card-content>
       <mat-form-field>
         <mat-label>Grade</mat-label>
-        <mat-select [(value)]="selectedGrade">
-          <mat-option *ngFor="let grade of grades" [value]="grade">{{ grade }}</mat-option>
+        <mat-select [(value)]="selectedGrade" (selectionChange)="fetchSubjects(selectedGrade?.id)">
+          <mat-option *ngFor="let grade of grades" [value]="grade">
+            {{ grade.name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field *ngIf="selectedGrade">
+      <mat-form-field>
         <mat-label>Subject</mat-label>
-        <mat-select [(value)]="selectedSubject">
-          <mat-option *ngFor="let subject of subjects" [value]="subject">{{ subject }}</mat-option>
+        <mat-select [(value)]="selectedSubject" [disabled]="!selectedGrade"
+          (selectionChange)="fetchLessons(selectedSubject?.id)">
+          <mat-option *ngFor="let subject of subjects" [value]="subject">
+            {{ subject.name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field *ngIf="selectedSubject">
-        <mat-label>Lesson (PDF)</mat-label>
-        <mat-select [(value)]="selectedLesson">
-          <mat-option *ngFor="let lesson of lessons" [value]="lesson">{{ lesson }}</mat-option>
+      <mat-form-field>
+        <mat-label>Lesson</mat-label>
+        <mat-select [(value)]="selectedLesson" [disabled]="!selectedSubject">
+          <mat-option *ngFor="let lesson of lessons" [value]="lesson">
+            {{ lesson.name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" (click)="loadLesson()" [disabled]="!selectedLesson">Load Lesson</button>
+      <button mat-raised-button color="primary" (click)="loadLesson()" [disabled]="!selectedLesson">
+        Load Lesson
+      </button>
     </mat-card-content>
   </mat-card>
 
+  
   <div class="content" *ngIf="pdfSrc">
     <div class="pdf-viewer">
-      <pdf-viewer [src]="pdfSrc" [render-text]="true" style="display: block;"></pdf-viewer>
+      <!-- <iframe [src]="getPdfUrl()" embedded="true"></iframe> -->
+      <iframe src="/AI_matrial_1.pdf" embedded="true"></iframe>
     </div>
     <div class="chat-window">
       <div class="chat-messages">
         <div *ngFor="let message of chatMessages"
-          [ngClass]="{'user-message': message.isUser, 'bot-message': !message.isUser}">
+          [ngClass]="{'user': message.isUser, 'AI': !message.isUser}">
           {{ message.text }}
         </div>
       </div>
       <div class="chat-input">
-        <mat-form-field>
-          <mat-label>Ask a question</mat-label>
-          <input matInput [(ngModel)]="userQuestion">
-        </mat-form-field>
+        
+        <input matInput [(ngModel)]="userQuestion">
         <button mat-raised-button color="primary" (click)="askQuestion()">Ask</button>
         <button mat-raised-button color="warn" (click)="endChat()">End Chat</button>
       </div>

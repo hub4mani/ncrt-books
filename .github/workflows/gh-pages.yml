@@ -28,19 +28,23 @@ jobs:
       - name: Run npm install
         run: npm i
 
+      # Define the deployment folder as a variable
+      - name: Set deployment folder
+        run: echo "DEPLOY_FOLDER=docs" >> $GITHUB_ENV
+
       # Builds the Angular app
       - name: Build Angular
         run: |
           ng build ncrt-books
-          ng build --configuration production --output-path docs --base-href /ncrt-books/
+          ng build --configuration production --output-path ${{ env.DEPLOY_FOLDER }} --base-href /ncrt-books/
 
-      - name: Move files to docs folder
+      - name: Move files to deployment folder
         run: |
-          mv docs/browser/* docs/ 
-          rm -rf docs/browser
+          mv ${{ env.DEPLOY_FOLDER }}/browser/* ${{ env.DEPLOY_FOLDER }}/ 
+          rm -rf ${{ env.DEPLOY_FOLDER }}/browser
 
       - uses: EndBug/add-and-commit@v7
         with:
-          add: "docs"
+          add: "${{ env.DEPLOY_FOLDER }}"
           default_author: github_actions
           message: "Lesson Question and Answer"

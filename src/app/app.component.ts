@@ -103,7 +103,7 @@ export class AppComponent implements OnInit {
       const relativePath = pdfUrl.replace('https://raw.githubusercontent.com/hub4mani/ncrt-books/main/', '');
 
       console.log(relativePath);
-      console.log(this.getSafeUrl(relativePath))
+      console.log(this.getSafeResourceUrl(relativePath))
       this.pdfSrc = relativePath;
       // console.log("pdfUrl = " + pdfUrl)
 
@@ -128,8 +128,8 @@ export class AppComponent implements OnInit {
     }
   }
 
-  getSafeUrl(url: string) {
-    return this.domSanitizer.bypassSecurityTrustUrl(url);
+  getSafeResourceUrl(url: string) {
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   askQuestion() {

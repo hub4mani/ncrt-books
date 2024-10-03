@@ -127,6 +127,10 @@ export class AppComponent implements OnInit {
     }
   }
 
+  getSafeUrl(url: string) {
+    return this.domSanitizer.bypassSecurityTrustUrl(url);
+  }
+
   askQuestion() {
     this.chatMessages.push({ text: this.userQuestion, isUser: true });
     const question = this.userQuestion;

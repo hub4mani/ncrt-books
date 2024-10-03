@@ -104,7 +104,7 @@ export class AppComponent implements OnInit {
 
       console.log(relativePath);
       this.pdfSrc = relativePath;
-      console.log("pdfUrl = " + pdfUrl)
+      // console.log("pdfUrl = " + pdfUrl)
 
       // this.http.post('https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/start_chat', { lesson: this.selectedLesson }).subscribe({
       //   next: (response) => {

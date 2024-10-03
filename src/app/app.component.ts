@@ -8,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
-import { DomSanitizer } from '@angular/platform-browser';
+import { AppPdfViewerComponent } from './app-pdf-viewer/app-pdf-viewer.component';
 
 interface Grade {
   id: number;
@@ -42,6 +42,7 @@ interface Lesson {
     MatSelectModule,
     MatButtonModule,
     PdfViewerModule,
+    AppPdfViewerComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -61,7 +62,7 @@ export class AppComponent implements OnInit {
   chatMessages: { text: string, isUser: boolean }[] = [];
   userQuestion: string = '';
 
-  constructor(private http: HttpClient, private domSanitizer: DomSanitizer) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.fetchGrades();
@@ -100,12 +101,9 @@ export class AppComponent implements OnInit {
     if (this.selectedLesson) {
       const pdfUrl = this.selectedLesson.github_url; // .replace('/blob/', '/raw/'); 
       // Remove the base URL from the full URL
-      const relativePath = pdfUrl.replace('https://raw.githubusercontent.com/hub4mani/ncrt-books/main/', '');
+      this.pdfSrc = pdfUrl.replace('https://raw.githubusercontent.com/hub4mani/ncrt-books/main/', '');
 
-      console.log(relativePath);
-      console.log(this.getSafeResourceUrl(relativePath))
-      this.pdfSrc = relativePath;
-      // console.log("pdfUrl = " + pdfUrl)
+      console.log("PDF Src=" + this.pdfSrc);
 
       // this.http.post('https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/start_chat', { lesson: this.selectedLesson }).subscribe({
       //   next: (response) => {
@@ -117,19 +115,6 @@ export class AppComponent implements OnInit {
       //   }
       // });
     }
-  }
-
-  getPdfUrl() {
-    if (this.pdfSrc) {
-      const url = `https://docs.google.com/viewer?url=${this.pdfSrc}&embedded=true`;
-      return this.domSanitizer.bypassSecurityTrustResourceUrl(url); 
-    } else {
-      return ''; 
-    }
-  }
-
-  getSafeResourceUrl(url: string) {
-    return this.domSanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   askQuestion() {

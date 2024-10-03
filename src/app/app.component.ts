@@ -103,6 +103,7 @@ export class AppComponent implements OnInit {
       const relativePath = pdfUrl.replace('https://raw.githubusercontent.com/hub4mani/ncrt-books/main/', '');
 
       console.log(relativePath);
+      console.log(this.getSafeUrl(relativePath))
       this.pdfSrc = relativePath;
       // console.log("pdfUrl = " + pdfUrl)
 

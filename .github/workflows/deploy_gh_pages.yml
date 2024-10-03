@@ -35,7 +35,7 @@ jobs:
       # Builds the Angular app
       - name: Build Angular
         run: |
-          ng build --configuration production --output-path ${{ env.DEPLOY_FOLDER }} --base-href /
+          ng build --configuration production --output-path ${{ env.DEPLOY_FOLDER }} --base-href /ncrt-books/
 
       - name: Move files to deployment folder
         run: |

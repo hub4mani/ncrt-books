@@ -30,7 +30,7 @@ jobs:
 
       # Define the deployment folder as a variable
       - name: Set deployment folder
-        run: echo "DEPLOY_FOLDER=site" >> $GITHUB_ENV
+        run: echo "DEPLOY_FOLDER=docs" >> $GITHUB_ENV
 
       # Builds the Angular app
       - name: Build Angular

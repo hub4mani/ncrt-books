@@ -35,13 +35,15 @@ jobs:
       # Builds the Angular app
       - name: Build Angular
         run: |
-          ng build ncrt-books
-          ng build --configuration production --output-path ${{ env.DEPLOY_FOLDER }} --base-href /ncrt-books/
+          ng build --configuration production --output-path ${{ env.DEPLOY_FOLDER }} --base-href /
 
       - name: Move files to deployment folder
         run: |
           mv ${{ env.DEPLOY_FOLDER }}/browser/* ${{ env.DEPLOY_FOLDER }}/ 
           rm -rf ${{ env.DEPLOY_FOLDER }}/browser
+
+      - name: Copy SchoolBooks folder
+        run: cp -r SchoolBooks ${{ env.DEPLOY_FOLDER }}/
 
       - uses: EndBug/add-and-commit@v7
         with:

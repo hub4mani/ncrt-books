@@ -99,7 +99,11 @@ export class AppComponent implements OnInit {
   loadLesson() {
     if (this.selectedLesson) {
       const pdfUrl = this.selectedLesson.github_url; // .replace('/blob/', '/raw/'); 
-      this.pdfSrc = pdfUrl;
+      // Remove the base URL from the full URL
+      const relativePath = pdfUrl.replace('https://raw.githubusercontent.com/hub4mani/ncrt-books/main/', '');
+
+      console.log(relativePath);
+      this.pdfSrc = relativePath;
       console.log("pdfUrl = " + pdfUrl)
 
       // this.http.post('https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/start_chat', { lesson: this.selectedLesson }).subscribe({

@@ -1,4 +1,4 @@
-import { Component, Input, SecurityContext } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
@@ -6,6 +6,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   templateUrl: './app-pdf-viewer.component.html',
   styleUrls: ['./app-pdf-viewer.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppPdfViewerComponent {
   @Input() pdfSrc: string = 'AI_matrial_1.pdf'; 

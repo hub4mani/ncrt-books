@@ -182,10 +182,17 @@ export class AppComponent implements OnInit {
     }
   }
 
+  lessonNumberStartsWithAlphabet(lessonNumber: string | undefined): boolean {
+    if (lessonNumber === undefined) {
+      return false; 
+    }
+    return /^[a-zA-Z]/.test(lessonNumber);
+  }
+
   updateLessonTitle() {
     if (this.selectedLesson) { // Ensure a lesson is selected
       const lessonId = this.selectedLesson.id; 
-      const url = `http://localhost:8000/lesson-data/lessons/${lessonId}`;
+      const url = `https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/lessons/${lessonId}`;
 
       this.http.put(url, {
         lesson_number: this.selectedLesson.lesson_number, // Use the updated values

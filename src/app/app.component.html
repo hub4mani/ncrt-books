@@ -43,7 +43,8 @@
     </div>
     <div class="chat-window">
       <div *ngIf="selectedLesson">
-        <div class="title-editor" *ngIf="selectedLesson.lesson_number.length > 3">
+        <div class="title-editor">
+        <!--  *ngIf="lessonNumberStartsWithAlphabet(selectedLesson.lesson_number)"> -->
           <mat-form-field class="lesson-number-editor">
             <mat-label>Lesson Number</mat-label>
             <input matInput [(ngModel)]="selectedLesson.lesson_number">
@@ -54,10 +55,6 @@
           </mat-form-field>
           <button mat-raised-button color="warn" (click)="updateLessonTitle()">Update</button>
         </div>
-
-        <ng-template #noLessonNumber>
-          <p>This lesson does not have an editable lesson number.</p>
-        </ng-template>
       </div>
 
       <div class="chat-messages">

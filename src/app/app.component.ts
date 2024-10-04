@@ -6,9 +6,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input'; 
 import { CommonModule } from '@angular/common';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
-import { AppPdfViewerComponent } from './app-pdf-viewer/app-pdf-viewer.component';
+// Import AppPdfViewerComponent here, but don't add it to imports array
+import { AppPdfViewerComponent } from './app-pdf-viewer/app-pdf-viewer.component'; 
+import { MarkdownModule } from 'ngx-markdown';
 
 interface Grade {
   id: number;
@@ -41,11 +44,13 @@ interface Lesson {
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    PdfViewerModule,
+    MatInputModule,
+    PdfViewerModule, 
+    MarkdownModule,
     AppPdfViewerComponent,
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 @Injectable({ providedIn: 'root' })
 export class AppComponent implements OnInit {
@@ -70,7 +75,9 @@ export class AppComponent implements OnInit {
   }
 
   fetchGrades() {
-    this.http.get<Grade[]>(`https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/grades`)
+    this.http.get<Grade[]>(
+      `https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/grades`
+    )
       .subscribe(data => {
         this.grades = data; 
       });
@@ -78,7 +85,9 @@ export class AppComponent implements OnInit {
 
   fetchSubjects(gradeId: number | undefined) {
     if (gradeId !== undefined) { 
-      this.http.get<Subject[]>(`https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/subjects?grade_id=${gradeId.toString()}`) 
+      this.http.get<Subject[]>(
+        `https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/subjects?grade_id=${gradeId.toString()}`
+      ) 
         .subscribe(data => {
           this.subjects = data; 
         });
@@ -89,7 +98,9 @@ export class AppComponent implements OnInit {
 
   fetchLessons(subjectId: number | undefined) {
     if (subjectId !== undefined) {
-      this.http.get<Lesson[]>(`https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/lessons?subject_id=${subjectId.toString()}`) 
+      this.http.get<Lesson[]>(
+        `https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/lessons?subject_id=${subjectId.toString()}`
+      ) 
         .subscribe(data => {
           this.lessons = data;
         });

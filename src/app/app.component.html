@@ -44,14 +44,20 @@
     </div>
     <div class="chat-window">
       <div class="chat-messages">
-        <div *ngFor="let message of chatMessages"
-          [ngClass]="{'user': message.isUser, 'AI': !message.isUser}">
-          {{ message.text }}
+        <div *ngFor="let message of chatMessages" [ngClass]="{'user': message.isUser, 'ai': !message.isUser}">
+          <div *ngIf="message.isUser">
+            {{ message.text }}
+          </div>
+          <div *ngIf="!message.isUser" class="markdown-body">
+            <markdown [data]="message.text"></markdown>
+          </div>
         </div>
       </div>
       <div class="chat-input">
-        
-        <input matInput [(ngModel)]="userQuestion">
+        <mat-form-field class="full-width">
+          <mat-label>Your question</mat-label>
+          <input matInput [(ngModel)]="userQuestion">
+        </mat-form-field>
         <button mat-raised-button color="primary" (click)="askQuestion()">Ask</button>
         <button mat-raised-button color="warn" (click)="endChat()">End Chat</button>
       </div>

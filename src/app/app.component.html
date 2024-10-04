@@ -24,7 +24,7 @@
         <mat-label>Lesson</mat-label>
         <mat-select [(value)]="selectedLesson" [disabled]="!selectedSubject">
           <mat-option *ngFor="let lesson of lessons" [value]="lesson">
-            {{ lesson.name }}
+            {{ lesson.lesson_title }} - {{ lesson.lesson_number }} - {{ lesson.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -42,6 +42,24 @@
       <app-pdf-viewer [pdfSrc]="pdfSrc"></app-pdf-viewer>
     </div>
     <div class="chat-window">
+      <div *ngIf="selectedLesson">
+        <div class="title-editor" *ngIf="selectedLesson.lesson_number.length > 3">
+          <mat-form-field class="lesson-number-editor">
+            <mat-label>Lesson Number</mat-label>
+            <input matInput [(ngModel)]="selectedLesson.lesson_number">
+          </mat-form-field>
+          <mat-form-field class="lesson-name-editor">
+            <mat-label>Lesson Name</mat-label>
+            <input matInput [(ngModel)]="selectedLesson.name">
+          </mat-form-field>
+          <button mat-raised-button color="warn" (click)="updateLessonTitle()">Update</button>
+        </div>
+
+        <ng-template #noLessonNumber>
+          <p>This lesson does not have an editable lesson number.</p>
+        </ng-template>
+      </div>
+
       <div class="chat-messages">
         <div *ngFor="let message of chatMessages" [ngClass]="{'user': message.isUser, 'ai': !message.isUser}">
           <div *ngIf="message.isUser">

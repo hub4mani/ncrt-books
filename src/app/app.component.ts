@@ -181,4 +181,27 @@ export class AppComponent implements OnInit {
       this.askQuestion();
     }
   }
+
+  updateLessonTitle() {
+    if (this.selectedLesson) { // Ensure a lesson is selected
+      const lessonId = this.selectedLesson.id; 
+      const url = `http://localhost:8000/lesson-data/lessons/${lessonId}`;
+
+      this.http.put(url, {
+        lesson_number: this.selectedLesson.lesson_number, // Use the updated values
+        name: this.selectedLesson.name                  // Use the updated values
+      }, {
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .subscribe(
+          response => {
+            console.log('Lesson title updated successfully:', response);
+            // You might want to update this.selectedLesson with the response data
+          },
+          error => {
+            console.error('Error updating lesson title:', error);
+          }
+        );
+    }
+  }
 }

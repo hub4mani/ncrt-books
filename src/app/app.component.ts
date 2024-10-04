@@ -68,6 +68,7 @@ export class AppComponent implements OnInit {
   userQuestion: string = '';
   chatId: string | null = null; // To store the chat ID
   chatStarted: boolean = false;
+  updateSuccess: boolean = false;
   
 
   constructor(private http: HttpClient) {}
@@ -203,10 +204,11 @@ export class AppComponent implements OnInit {
         .subscribe(
           response => {
             console.log('Lesson title updated successfully:', response);
-            // You might want to update this.selectedLesson with the response data
+            this.updateSuccess = true;
           },
           error => {
             console.error('Error updating lesson title:', error);
+            this.updateSuccess = false;
           }
         );
     }

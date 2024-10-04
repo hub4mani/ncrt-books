@@ -54,13 +54,14 @@ export class AppComponent implements OnInit {
   subjects: Subject[] = [];
   lessons: Lesson[] = [];
 
-  selectedGrade: Grade | null = null; // Initialize as null
-  selectedSubject: Subject | null = null; // Initialize as null
+  selectedGrade: Grade | null = null;
+  selectedSubject: Subject | null = null;
   selectedLesson: Lesson | null = null;
   
   pdfSrc: any = null;
   chatMessages: { text: string, isUser: boolean }[] = [];
   userQuestion: string = '';
+  chatId: string | null = null; // To store the chat ID
 
   constructor(private http: HttpClient) {}
 
@@ -82,7 +83,7 @@ export class AppComponent implements OnInit {
           this.subjects = data; 
         });
     } else {
-      this.subjects = []; // Clear subjects if no grade is selected
+      this.subjects = [];
     }
   }
 
@@ -93,44 +94,69 @@ export class AppComponent implements OnInit {
           this.lessons = data;
         });
     } else {
-      this.lessons = []; // Clear lessons if no subject is selected
+      this.lessons = []; 
     }
   }
 
   loadLesson() {
     if (this.selectedLesson) {
-      const pdfUrl = this.selectedLesson.github_url; // .replace('/blob/', '/raw/'); 
-      // Remove the base URL from the full URL
+      const pdfUrl = this.selectedLesson.github_url;
       this.pdfSrc = pdfUrl.replace('https://raw.githubusercontent.com/hub4mani/ncrt-books/main/', '');
 
-      console.log("PDF Src=" + this.pdfSrc);
+      console.log('PDF Src=' + this.pdfSrc);
 
-      // this.http.post('https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/start_chat', { lesson: this.selectedLesson }).subscribe({
-      //   next: (response) => {
-      //     // Handle start_chat response
-      //   },
-      //   error: (error) => {
-      //     console.error('Error starting chat:', error); 
-      //     // Display error message to the user
-      //   }
-      // });
+      // Start the chat session
+      this.http.post(
+        'https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/start_chat',
+        { pdf_url: this.selectedLesson.github_url }
+      )
+        .subscribe({
+          next: (response: any) => {
+            this.chatId = response.chat_id; 
+            console.log('Chat session started:', this.chatId);
+          },
+          error: (error) => {
+            console.error('Error starting chat:', error); 
+          }
+        });
     }
   }
 
   askQuestion() {
-    this.chatMessages.push({ text: this.userQuestion, isUser: true });
-    const question = this.userQuestion;
-    this.userQuestion = '';
+    if (this.chatId && this.userQuestion) { // Check if chatId is available
+      this.chatMessages.push({ text: this.userQuestion, isUser: true });
+      const question = this.userQuestion;
+      this.userQuestion = '';
 
-    this.http.post('/chat', { question }).subscribe((response: any) => {
-      this.chatMessages.push({ text: response.answer, isUser: false });
-    });
+      // Send the chat query
+      this.http.post(
+          'https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/chat',
+          { 
+            chat_id: this.chatId,
+            query: question,
+          }
+        )
+        .subscribe((response: any) => {
+          this.chatMessages.push({ text: response.answer, isUser: false });
+        });
+    } else {
+      console.error('Chat session not started.'); 
+    }
   }
 
   endChat() {
-    this.http.post('/end_chat', {}).subscribe((response) => {
-      // Handle end_chat response if needed
-      this.chatMessages = [];
-    });
+    if (this.chatId) { // Check if chatId is available
+      this.http.post(
+        'https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/end_chat',
+        { 
+          chat_id: this.chatId,
+          query: '',
+        }
+      )
+        .subscribe((response) => {
+          this.chatMessages = [];
+          this.chatId = null; // Reset chatId
+        });
+    }
   }
 }

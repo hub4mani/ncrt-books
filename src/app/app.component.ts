@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Component, HostListener, Injectable, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'; 
@@ -67,6 +67,8 @@ export class AppComponent implements OnInit {
   chatMessages: { text: string, isUser: boolean }[] = [];
   userQuestion: string = '';
   chatId: string | null = null; // To store the chat ID
+  chatStarted: boolean = false;
+  
 
   constructor(private http: HttpClient) {}
 
@@ -125,6 +127,7 @@ export class AppComponent implements OnInit {
           next: (response: any) => {
             this.chatId = response.chat_id; 
             console.log('Chat session started:', this.chatId);
+            this.chatStarted = true;
           },
           error: (error) => {
             console.error('Error starting chat:', error); 
@@ -167,7 +170,15 @@ export class AppComponent implements OnInit {
         .subscribe((response) => {
           this.chatMessages = [];
           this.chatId = null; // Reset chatId
+          this.chatStarted = false;
         });
+    }
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.chatStarted) {
+      this.askQuestion();
     }
   }
 }

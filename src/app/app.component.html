@@ -29,18 +29,17 @@
         </mat-select>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" (click)="loadLesson()" [disabled]="!selectedLesson">
+      <button mat-raised-button color="primary" (click)="loadLesson()" [disabled]="!selectedLesson || chatStarted">
         Load Lesson
       </button>
+
     </mat-card-content>
   </mat-card>
 
-  
+
   <div class="content" *ngIf="pdfSrc">
     <div class="pdf-viewer">
       <app-pdf-viewer [pdfSrc]="pdfSrc"></app-pdf-viewer>
-      <!-- <iframe [src]="getSafeResourceUrl(pdfSrc)" embedded="true"></iframe> -->
-      <!-- <iframe src="AI_matrial_1.pdf" embedded="true"></iframe> -->
     </div>
     <div class="chat-window">
       <div class="chat-messages">
@@ -58,7 +57,7 @@
           <mat-label>Your question</mat-label>
           <input matInput [(ngModel)]="userQuestion">
         </mat-form-field>
-        <button mat-raised-button color="primary" (click)="askQuestion()">Ask</button>
+        <button mat-raised-button color="primary" (click)="askQuestion()" [disabled]="!chatId">Ask</button>
         <button mat-raised-button color="warn" (click)="endChat()">End Chat</button>
       </div>
     </div>

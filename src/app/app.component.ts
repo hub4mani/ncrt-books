@@ -12,6 +12,10 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 // Import AppPdfViewerComponent here, but don't add it to imports array
 import { AppPdfViewerComponent } from './app-pdf-viewer/app-pdf-viewer.component'; 
 import { MarkdownModule } from 'ngx-markdown';
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login'
+import { SocialAuthService, SocialUser } from "@abacritt/angularx-social-login";
+import { GoogleLoginProvider } from "@abacritt/angularx-social-login";
+
 
 interface Grade {
   id: number;
@@ -48,13 +52,14 @@ interface Lesson {
     PdfViewerModule, 
     MarkdownModule,
     AppPdfViewerComponent,
+    GoogleSigninButtonModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 @Injectable({ providedIn: 'root' })
 export class AppComponent implements OnInit {
-  title = 'ncrt-books';
+  title = 'Lesson Q&A';
   grades: Grade[] = [];
   subjects: Subject[] = [];
   lessons: Lesson[] = [];
@@ -69,12 +74,28 @@ export class AppComponent implements OnInit {
   chatId: string | null = null; // To store the chat ID
   chatStarted: boolean = false;
   updateSuccess: boolean = false;
+
+  user: SocialUser | null = null; 
+  loggedIn: boolean = false;
   
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: SocialAuthService) {}
 
   ngOnInit() {
     this.fetchGrades();
+    this.authService.authState.subscribe((user) => {
+      this.user = user;
+      this.loggedIn = (user != null);
+      console.log(this.user);
+    });
+  }
+
+  signInWithGoogle(): void {
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+  }
+
+  signOut(): void {
+    this.authService.signOut();
   }
 
   fetchGrades() {

@@ -86,7 +86,9 @@ export class AppComponent implements OnInit {
     this.authService.authState.subscribe((user) => {
       this.user = user;
       this.loggedIn = (user != null);
-      console.log(this.user);
+      if (user) {
+        this.logUserActivity('login'); // Log login activity
+      }
     });
   }
 
@@ -95,7 +97,30 @@ export class AppComponent implements OnInit {
   }
 
   signOut(): void {
+    this.logUserActivity('logout');
     this.authService.signOut();
+  }
+
+  private logUserActivity(activityType: string): void {
+    if (this.user) { // Ensure user is logged in
+      const activityData = {
+        username: this.user.firstName + ' ' + this.user.lastName,
+        email: this.user.email,
+        activity_type: activityType
+      };
+
+      this.http.post(
+        'https://ai-gateway-serv-178678790881.asia-south1.run.app/lesson-data/user_activity', 
+        activityData
+      ).subscribe(
+        response => {
+          console.log('User activity logged successfully:', response);
+        },
+        error => {
+          console.error('Error logging user activity:', error);
+        }
+      );
+    }
   }
 
   fetchGrades() {

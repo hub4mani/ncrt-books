@@ -79,7 +79,7 @@ export class AppComponent implements OnInit {
 
   fetchGrades() {
     this.http.get<Grade[]>(
-      `https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/grades`
+      `https://ai-gateway-serv-178678790881.asia-south1.run.app/lesson-data/grades`
     )
       .subscribe(data => {
         this.grades = data; 
@@ -89,7 +89,7 @@ export class AppComponent implements OnInit {
   fetchSubjects(gradeId: number | undefined) {
     if (gradeId !== undefined) { 
       this.http.get<Subject[]>(
-        `https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/subjects?grade_id=${gradeId.toString()}`
+        `https://ai-gateway-serv-178678790881.asia-south1.run.app/lesson-data/subjects?grade_id=${gradeId.toString()}`
       ) 
         .subscribe(data => {
           this.subjects = data; 
@@ -102,7 +102,7 @@ export class AppComponent implements OnInit {
   fetchLessons(subjectId: number | undefined) {
     if (subjectId !== undefined) {
       this.http.get<Lesson[]>(
-        `https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/lessons?subject_id=${subjectId.toString()}`
+        `https://ai-gateway-serv-178678790881.asia-south1.run.app/lesson-data/lessons?subject_id=${subjectId.toString()}`
       ) 
         .subscribe(data => {
           this.lessons = data;
@@ -121,7 +121,7 @@ export class AppComponent implements OnInit {
 
       // Start the chat session
       this.http.post(
-        'https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/start_chat',
+        'https://ai-gateway-serv-178678790881.asia-south1.run.app/doc-ai/start_chat',
         { pdf_url: this.selectedLesson.github_url }
       )
         .subscribe({
@@ -145,7 +145,7 @@ export class AppComponent implements OnInit {
 
       // Send the chat query
       this.http.post(
-          'https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/chat',
+          'https://ai-gateway-serv-178678790881.asia-south1.run.app/doc-ai/chat',
           { 
             chat_id: this.chatId,
             query: question,
@@ -162,7 +162,7 @@ export class AppComponent implements OnInit {
   endChat() {
     if (this.chatId) { // Check if chatId is available
       this.http.post(
-        'https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/doc-ai/end_chat',
+        'https://ai-gateway-serv-178678790881.asia-south1.run.app/doc-ai/end_chat',
         { 
           chat_id: this.chatId,
           query: '',
@@ -193,7 +193,7 @@ export class AppComponent implements OnInit {
   updateLessonTitle() {
     if (this.selectedLesson) { // Ensure a lesson is selected
       const lessonId = this.selectedLesson.id; 
-      const url = `https://ai-gateway-serv.purpledune-797b0a60.eastus.azurecontainerapps.io/lesson-data/lessons/${lessonId}`;
+      const url = `https://ai-gateway-serv-178678790881.asia-south1.run.app/lesson-data/lessons/${lessonId}`;
 
       this.http.put(url, {
         lesson_number: this.selectedLesson.lesson_number, // Use the updated values

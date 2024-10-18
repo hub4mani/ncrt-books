@@ -1,6 +1,6 @@
 import { Component, HostListener, Injectable, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'; 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -77,6 +77,7 @@ export class AppComponent implements OnInit {
 
   user: SocialUser | null = null; 
   loggedIn: boolean = false;
+  userFeedback: string = '';
   
 
   constructor(private http: HttpClient, private authService: SocialAuthService) {}
@@ -93,7 +94,11 @@ export class AppComponent implements OnInit {
   }
 
   signInWithGoogle(): void {
-    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID, {
+      scopes: 'profile email openid https://www.googleapis.com/auth/userinfo.profile' 
+    }).then(user => {
+        console.log(user.authToken); // Check if the token is available
+    });
   }
 
   signOut(): void {
@@ -103,21 +108,56 @@ export class AppComponent implements OnInit {
 
   private logUserActivity(activityType: string): void {
     if (this.user) { // Ensure user is logged in
+      console.log(this.user)
       const activityData = {
         username: this.user.firstName + ' ' + this.user.lastName,
         email: this.user.email,
         activity_type: activityType
       };
 
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${this.user.authToken}`
+      });
+
       this.http.post(
         'https://ai-gateway-serv-178678790881.asia-south1.run.app/lesson-data/user_activity', 
-        activityData
+        activityData,
+        { headers: headers }
       ).subscribe(
         response => {
           console.log('User activity logged successfully:', response);
         },
         error => {
           console.error('Error logging user activity:', error);
+        }
+      );
+    }
+  }
+
+  submitFeedback() {
+    if (this.user && this.userFeedback) {
+      const feedbackData = {
+        email: this.user.email,
+        feedback: this.userFeedback
+      };
+
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${this.user.authToken}`
+      });
+
+      this.http.post(
+        'https://ai-gateway-serv-178678790881.asia-south1.run.app/lesson-data/user_feedback',
+        feedbackData,
+        { headers: headers }
+      ).subscribe(
+        response => {
+          console.log('Feedback submitted successfully:', response);
+          // Optionally, you can display a success message to the user
+          this.userFeedback = ''; // Clear the feedback field
+        },
+        error => {
+          console.error('Error submitting feedback:', error);
+          // Optionally, you can display an error message to the user
         }
       );
     }

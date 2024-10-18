@@ -1,9 +1,28 @@
 <div class="container">
-  <asl-google-signin-button *ngIf="!loggedIn"></asl-google-signin-button>
+  <asl-google-signin-button 
+    *ngIf="!loggedIn"
+      type="standard"
+      shape="pill"
+      size="large" 
+      color="light"
+      [width]="200"
+      > 
+  </asl-google-signin-button>
 
   <div *ngIf="loggedIn">
-    <p *ngIf="user">Welcome, {{ user.name }}! <a href="#" (click)="signOut()">Sign out</a></p>
-    <mat-card>
+    <div *ngIf="user" class="welcome-message"> 
+      <span>Welcome, {{ user.firstName }} {{ user.lastName }}! </span>
+      <div class="feedback-container">
+        <mat-form-field appearance="outline" class="feedback-input"> 
+          <mat-label>Feedback</mat-label>
+          <input matInput [(ngModel)]="userFeedback">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="submitFeedback()">Submit</button>
+      </div>
+      <a href="#" (click)="signOut()" class="sign-out">Sign out</a>
+    </div>
+    
+    <mat-card class="form-card">
       <mat-card-content>
         <mat-form-field>
           <mat-label>Grade</mat-label>

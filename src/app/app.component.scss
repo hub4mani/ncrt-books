@@ -18,26 +18,47 @@ html, body {
   margin-bottom: 20px;
 }
 
-.feedback-container {
-  display: flex;
-  align-items: center;
-}
-
 .sign-out {
   margin-right: 40px;
 }
 
+.card-feedback-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
 .form-card {
-  display: inline-flex;
+  display: flex;
   justify-content: center;
   margin-bottom: 20px;
-  align-self: center;
+  flex: 1;
+}
+
+.feedback-card {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex: 1;
+  width: 100%; /* Ensures full width */
+}
+
+.feedback-container {
+  display: flex;
+  align-items: center;
+  width: 100%; /* Ensures feedback input takes all available width */
+}
+
+.feedback-input {
+  flex-grow: 1; /* Allows feedback input to take all available width */
 }
 
 .content {
   display: flex;
   flex: 1;
-  height: calc(100vh - 200px); /* Adjusted to fill remaining space */
+  height: calc(100vh - 160px); /* Adjusted to fill remaining space */
   min-height: 0;
   margin-top: 0;
   margin-bottom: 10px;

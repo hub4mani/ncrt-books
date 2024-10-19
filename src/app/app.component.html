@@ -1,64 +1,64 @@
 <div class="container">
   <asl-google-signin-button 
-    *ngIf="!loggedIn"
-      type="standard"
-      shape="pill"
-      size="large" 
-      color="light"
-      [width]="200"
-      > 
+    *ngIf="!loggedIn" 
+    type="standard" 
+    shape="pill" 
+    size="large" 
+    color="light" 
+    [width]="200">
   </asl-google-signin-button>
 
   <div *ngIf="loggedIn">
-    <div *ngIf="user" class="welcome-message"> 
-      <span>Welcome, {{ user.firstName }} {{ user.lastName }}! </span>
-      <div class="feedback-container">
-        <mat-form-field appearance="outline" class="feedback-input"> 
-          <mat-label>Feedback</mat-label>
-          <input matInput [(ngModel)]="userFeedback">
-        </mat-form-field>
-        <button mat-raised-button color="primary" (click)="submitFeedback()">Submit</button>
-      </div>
+    <div *ngIf="user" class="welcome-message">
+      <span>Welcome, {{ user.firstName }} {{ user.lastName }}!</span>
       <a href="#" (click)="signOut()" class="sign-out">Sign out</a>
     </div>
-    
-    <mat-card class="form-card">
-      <mat-card-content>
-        <mat-form-field>
-          <mat-label>Grade</mat-label>
-          <mat-select [(value)]="selectedGrade" (selectionChange)="fetchSubjects(selectedGrade?.id)">
-            <mat-option *ngFor="let grade of grades" [value]="grade">
-              {{ grade.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Subject</mat-label>
-          <mat-select [(value)]="selectedSubject" [disabled]="!selectedGrade"
-            (selectionChange)="fetchLessons(selectedSubject?.id)">
-            <mat-option *ngFor="let subject of subjects" [value]="subject">
-              {{ subject.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+    <div class="card-feedback-wrapper">
+      <mat-card class="form-card">
+        <mat-card-content>
+          <mat-form-field>
+            <mat-label>Grade</mat-label>
+            <mat-select [(value)]="selectedGrade" (selectionChange)="fetchSubjects(selectedGrade?.id)">
+              <mat-option *ngFor="let grade of grades" [value]="grade">
+                {{ grade.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Subject</mat-label>
+            <mat-select [(value)]="selectedSubject" [disabled]="!selectedGrade" (selectionChange)="fetchLessons(selectedSubject?.id)">
+              <mat-option *ngFor="let subject of subjects" [value]="subject">
+                {{ subject.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Lesson</mat-label>
+            <mat-select [(value)]="selectedLesson" [disabled]="!selectedSubject">
+              <mat-option *ngFor="let lesson of lessons" [value]="lesson">
+                {{ lesson.lesson_title }} - {{ lesson.lesson_number }} - {{ lesson.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="loadLesson()" [disabled]="!selectedLesson || chatStarted">
+            Load Lesson
+          </button>
+        </mat-card-content>
+      </mat-card>
 
-        <mat-form-field>
-          <mat-label>Lesson</mat-label>
-          <mat-select [(value)]="selectedLesson" [disabled]="!selectedSubject">
-            <mat-option *ngFor="let lesson of lessons" [value]="lesson">
-              {{ lesson.lesson_title }} - {{ lesson.lesson_number }} - {{ lesson.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <button mat-raised-button color="primary" (click)="loadLesson()" [disabled]="!selectedLesson || chatStarted">
-          Load Lesson
-        </button>
-
-      </mat-card-content>
-    </mat-card>
-
+      <mat-card class="feedback-card">
+        <mat-card-content>
+          <div class="feedback-container">
+            <mat-form-field appearance="outline" class="feedback-input">
+              <mat-label>Feedback</mat-label>
+              <input matInput [(ngModel)]="userFeedback">
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="submitFeedback()">Submit</button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
 
     <div class="content" *ngIf="pdfSrc">
       <div class="pdf-viewer">
@@ -67,7 +67,6 @@
       <div class="chat-window">
         <div *ngIf="selectedLesson">
           <div class="title-editor">
-          <!--  *ngIf="lessonNumberStartsWithAlphabet(selectedLesson.lesson_number)"> -->
             <mat-form-field class="lesson-number-editor">
               <mat-label>Lesson Number</mat-label>
               <input matInput [(ngModel)]="selectedLesson.lesson_number">
@@ -92,6 +91,7 @@
             </div>
           </div>
         </div>
+
         <div class="chat-input">
           <mat-form-field class="full-width">
             <mat-label>Your question</mat-label>

@@ -84,6 +84,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.fetchGrades();
+    // Check login status
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      this.loggedIn = true;
+    }
     this.authService.authState.subscribe((user) => {
       this.user = user;
       this.loggedIn = (user != null);
@@ -98,12 +102,14 @@ export class AppComponent implements OnInit {
       scopes: 'profile email openid https://www.googleapis.com/auth/userinfo.profile' 
     }).then(user => {
         console.log(user.authToken); // Check if the token is available
+        localStorage.setItem('isLoggedIn', 'true'); // Store login status
     });
   }
 
   signOut(): void {
     this.logUserActivity('logout');
     this.authService.signOut();
+    localStorage.removeItem('isLoggedIn');
   }
 
   private logUserActivity(activityType: string): void {

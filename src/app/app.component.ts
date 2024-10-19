@@ -73,7 +73,7 @@ export class AppComponent implements OnInit {
   userQuestion: string = '';
   chatId: string | null = null; // To store the chat ID
   chatStarted: boolean = false;
-  updateSuccess: boolean = false;
+  titleUpdateInProgress: boolean = false;
 
   user: SocialUser | null = null; 
   loggedIn: boolean = false;
@@ -287,6 +287,8 @@ export class AppComponent implements OnInit {
       const lessonId = this.selectedLesson.id; 
       const url = `https://ai-gateway-serv-178678790881.asia-south1.run.app/lesson-data/lessons/${lessonId}`;
 
+      this.titleUpdateInProgress = true;
+      
       this.http.put(url, {
         lesson_number: this.selectedLesson.lesson_number, // Use the updated values
         name: this.selectedLesson.name                  // Use the updated values
@@ -296,11 +298,11 @@ export class AppComponent implements OnInit {
         .subscribe(
           response => {
             console.log('Lesson title updated successfully:', response);
-            this.updateSuccess = true;
+            this.titleUpdateInProgress = false;
           },
           error => {
             console.error('Error updating lesson title:', error);
-            this.updateSuccess = false;
+            this.titleUpdateInProgress = false;
           }
         );
     }

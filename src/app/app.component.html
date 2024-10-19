@@ -76,7 +76,7 @@
               <mat-label>Lesson Name</mat-label>
               <input matInput [(ngModel)]="selectedLesson.name">
             </mat-form-field>
-            <button mat-raised-button color="warn" (click)="updateLessonTitle()" [disabled]="updateSuccess">
+            <button mat-raised-button color="warn" (click)="updateLessonTitle()" [disabled]="titleUpdateInProgress">
               Update
             </button>
           </div>

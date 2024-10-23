@@ -252,7 +252,7 @@ export class AppComponent implements OnInit {
   }
 
   endChat() {
-    if (this.chatId) { // Check if chatId is available
+    if (this.chatId) {
       this.http.post(
         'https://ai-gateway-serv-178678790881.asia-south1.run.app/doc-ai/end_chat',
         { 
@@ -260,11 +260,21 @@ export class AppComponent implements OnInit {
           query: '',
         }
       )
-        .subscribe((response) => {
+      .subscribe({
+        next: (response) => {
           this.chatMessages = [];
-          this.chatId = null; // Reset chatId
+          this.chatId = null;
           this.chatStarted = false;
-        });
+        },
+        error: (error) => {
+          console.error('Error ending chat:', error); // Log the error for debugging
+          this.chatStarted = false; // Ensure chatStarted is false even on error
+          // Optionally, you can display an error message to the user here
+        },
+        complete: () => {
+          // This block is optional and executes after both success and error
+        }
+      });
     }
   }
 

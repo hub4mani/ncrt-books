@@ -208,7 +208,7 @@ export class AppComponent implements OnInit {
     if (this.selectedLesson) {
       const pdfUrl = this.selectedLesson.github_url;
       const filePath = pdfUrl.replace('https://raw.githubusercontent.com/hub4mani/ncrt-books/main/', '');
-      this.pdfSrc = file_path.lstrip('public/')  # Grade6 books have extra 'public' prefix
+      this.pdfSrc = file_path.lstrip('public/');
 
       console.log('PDF Src wihtout public = ' + this.pdfSrc);
 

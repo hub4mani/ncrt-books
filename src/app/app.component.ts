@@ -210,7 +210,7 @@ export class AppComponent implements OnInit {
       const filePath = pdfUrl.replace('https://raw.githubusercontent.com/hub4mani/ncrt-books/main/', '');
       this.pdfSrc = file_path.lstrip('public/')  # Grade6 books have extra 'public' prefix
 
-      console.log('PDF Src=' + this.pdfSrc);
+      console.log('PDF Src wihtout public = ' + this.pdfSrc);
 
       // Start the chat session
       this.http.post(
